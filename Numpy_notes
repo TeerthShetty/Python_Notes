@@ -1,0 +1,1480 @@
+# I have reffered the code snippets from Python official Documentation, 365 DataScience Numpy course and my older notes.
+# I have tested these codes and on they work on the python 3.12.0 so far, so it should also work on prior versions as well.
+# I will try and keep updating these whenever possible.
+# Thank you for reading.
+
+import numpy as np
+
+# Numpy arrays are homogeneous
+
+# List vs Numpy array
+
+# 1) numpy are homogeneous, list are heterogeneous
+# 2) List are used for general purpose while numpy array are optimized for numerical operations
+# 3) List occupy more space than numpy arrays
+# 4) numpy has more features than list
+# 5) Arrays work elementwise but lists don't.
+#    Eg math.sqrt(list1) does not works it will give an error
+#       np.sqrt(np_array1) will work and square each and every element
+
+
+# axis = 0  |
+#           |
+#          \/
+
+# axis = 1 ---->
+
+# Load vs Import
+# Importing doesn't keep track of the datatype of the original array
+# while loading, we don't need to specify or change our data while
+# working with out Python object
+
+###################################################
+###################################################
+# Creating Numpy arrays
+##################################################
+##################################################
+
+###################################################
+# 1) Creating numpy array from other data types like tuples or lists
+# 2) Intrinsic Numpy creation
+# 3) Replicating, rejoining or mutating existing arrays
+# 4) All functions
+###################################################
+
+
+# 1) Creating numpy array from other data types like tuples or lists
+np1_1d = np.array([1, 2, 3], dtype=np.int8)
+print(np1_1d)
+# [1 2 3]
+
+np2_2d = np.array([[4, 5, 6], [7, 8, 9]], dtype=np.int8)
+print(np2_2d)
+# [[4 5 6]
+#  [7 8 9]]
+
+
+# 2) Intrinsic Numpy creation
+print(np.arange(2, 3, 0.1))
+# [2.  2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9]
+
+print(np.linspace(1., 4., 6))
+# [1.  1.6 2.2 2.8 3.4 4. ]
+
+
+# 3) Replicating, rejoining or mutating existing arrays
+a = np.array([1, 2, 3, 4, 5, 6])
+b = a[:2]
+b += 1
+print('a =', a, '; b =', b)
+# a = [2 3 3 4 5 6] ; b = [2 3]
+# Changes in b is reflected in a because b is view of a hence .copy() is to be used
+
+a = np.array([1, 2, 3, 4, 5, 6])
+b = a[:2].copy()
+b += 1
+print('a =', a, '; b =', b)
+# a = [1 2 3 4 5 6] ; b = [2 3]
+
+
+# 4) All functions
+# https://numpy.org/doc/1.26/reference/routines.array-creation.html
+# a) np.empty()
+print(np.empty([2, 2], dtype=int))
+# [[ -85714906 1741665857]
+#  [ 532530910 -898173732]]
+
+# b) np.empty_like()
+a = ([1, 2, 3], [4, 5, 6])
+print(np.empty_like(a))  # Shape of 'a' is referred
+# [[2 3 3]
+#  [4 5 6]]
+
+# c) np.eye()
+print(np.eye(2, dtype=int))
+# [[1 0]
+#  [0 1]]
+
+print(np.eye(5, dtype=int, k=2))  # k is for deviation
+# [[0 0 1 0 0]
+#  [0 0 0 1 0]
+#  [0 0 0 0 1]
+#  [0 0 0 0 0]
+#  [0 0 0 0 0]]
+
+
+# d) np.identity()
+print(np.identity(3))
+# [[1. 0. 0.]
+#  [0. 1. 0.]
+#  [0. 0. 1.]]
+
+
+# e) np.ones()
+print(np.ones((3, 4)))
+# [[1. 1. 1. 1.]
+#  [1. 1. 1. 1.]
+#  [1. 1. 1. 1.]]
+
+
+# f) np.zeros()
+print(np.zeros((3, 4)))
+# [[0. 0. 0. 0.]
+#  [0. 0. 0. 0.]
+#  [0. 0. 0. 0.]]
+
+# g) np.full()
+print(np.full((2, 2), 10))
+# [[10 10]
+#  [10 10]]
+
+# h) np.fromiter()
+print(np.fromiter(((x + 1, x + 2) for x in range(5)), dtype=np.dtype((int, 2))))
+# [[1 2]
+#  [2 3]
+#  [3 4]
+#  [4 5]
+#  [5 6]]
+
+# i) np.fromsting()
+print(np.fromstring('1, 2', dtype=int, sep=','))
+# [1 2]
+
+# j) np.linspace()
+print(np.linspace(2.0, 3.0, num=5))
+# [2.   2.25 2.5  2.75 3.  ]
+print(np.linspace(2.0, 3.0, num=5, endpoint=False))
+# [2.  2.2 2.4 2.6 2.8]
+
+
+# TODO : Types of copies -> deep copy shallow copy
+
+from numpy.random import Generator as gen
+from numpy.random import PCG64 as pcg
+
+# The generator function takes a bit generator as an input and creates generator object
+# PCG -> Permutation Congruential Generator
+
+array_RG = gen(pcg())
+print(array_RG.normal())
+# 0.21499885489471277
+
+print(array_RG.normal(size=(5, 5)))
+# [[ 0.53593585  0.34958835  1.10913197 -0.5723834   0.26842998]
+#  [-0.8995958  -0.6316504  -0.69576487  0.8794759   0.70719504]
+#  [-1.46727003 -0.40314498  0.24122379  0.68481824 -1.8927123 ]
+#  [-2.02870409  0.05698668 -0.22281506 -0.54490255 -0.59733131]
+#  [ 0.22595879  1.3422009  -1.0598123   0.86232609  0.01275974]]
+
+array_RG = gen(pcg(seed=365))
+print(array_RG.normal(size=(5, 5)))
+# [[-0.13640899  0.09414431 -0.06300442  1.05391641 -0.6866818 ]
+#  [-0.50922173 -0.7999526   0.73041825  0.08825439 -2.1177576 ]
+#  [ 0.65526774 -0.48095012 -0.5519114  -0.58578662 -0.98257896]
+#  [ 1.12378166 -1.30984316 -0.04703774  0.955272    0.26071745]
+#  [-0.20023668 -1.50172484 -1.4929163   0.96535084  1.18694633]]
+
+# The seed will exist only for one execution and the value will change in next execution
+
+
+array_RG = gen(pcg(seed=365))
+print(array_RG.integers(low=10, high=100, size=(5, 5)))
+# [[18 78 64 78 84]
+#  [66 67 28 10 69]
+#  [45 15 37 74 96]
+#  [19 21 89 73 54]
+#  [53 84 66 51 92]]
+
+array_RG = gen(pcg(seed=365))
+print(array_RG.choice([1, 2, 3, 4, 5], size=(5, 5)))
+# The default probability is equal for all but we can manually change it
+# The sum should be 1
+# [[1 4 4 4 5]
+#  [4 4 2 1 4]
+#  [2 1 2 4 5]
+#  [1 1 5 4 3]
+#  [3 5 4 3 5]]
+
+array_RG = gen(pcg(seed=365))
+print(array_RG.choice([1, 2, 3, 4, 5], p=[0.1, 0.2, 0.3, 0.2, 0.2], size=(5, 5)))
+# [[4 4 4 2 4]
+#  [1 4 2 5 3]
+#  [5 3 1 4 3]
+#  [2 3 3 4 3]
+#  [4 1 4 5 2]]
+
+
+###################################################
+###################################################
+# Array Manipulation
+##################################################
+##################################################
+
+# Array can be Traversed backwards using negative indices
+
+
+# a) np.shape()
+print(np.shape(np.eye(3)))
+# (3, 3)
+
+# b) np.reshape()
+print(np.arange(6).reshape((3, 2)))
+# [[0 1]
+#  [2 3]
+#  [4 5]]
+
+# c) np.transpose()
+a = np.ones((1, 2, 3))
+print(a)
+# [[[1. 1. 1.]
+#   [1. 1. 1.]]]
+
+print(np.transpose(a, (1, 0, 2)))
+# [[[1. 1. 1.]]
+#
+#  [[1. 1. 1.]]]
+
+
+# d) np.concatenate()
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6]])
+np.concatenate((a, b), axis=0)
+
+# e) np.vstack()
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(np.vstack((a, b)))
+# [[1 2 3]
+#  [4 5 6]]
+
+a = np.array([[1], [2], [3]])
+b = np.array([[4], [5], [6]])
+print(np.vstack((a, b)))
+# [[1]
+#  [2]
+#  [3]
+#  [4]
+#  [5]
+#  [6]]
+
+
+# f) np.hstack()
+a = np.array((1, 2, 3))
+b = np.array((4, 5, 6))
+print(np.hstack((a, b)))
+# [1 2 3 4 5 6]
+
+a = np.array([[1], [2], [3]])
+b = np.array([[4], [5], [6]])
+print(np.hstack((a, b)))
+# [[1 4]
+#  [2 5]
+#  [3 6]]
+
+
+# g) np.split()
+x = np.arange(9.0)
+print(np.split(x, 3))
+# [array([0., 1., 2.]), array([3., 4., 5.]), array([6., 7., 8.])]
+
+# h) np.hsplit()
+x = np.array([0, 1, 2, 3, 4, 5])
+print(np.hsplit(x, 2))
+# [array([0, 1, 2]), array([3, 4, 5])]
+
+# i) np.vsplit()
+x = np.arange(8.0).reshape(2, 2, 2)
+print(np.vsplit(x, 2))
+# [array([[[0., 1.],
+#         [2., 3.]]]), array([[[4., 5.],
+#         [6., 7.]]])]
+
+
+# j) np.delete()
+arr = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+print(arr)
+print(np.delete(arr, 1, 0))
+# [[ 1  2  3  4]
+#  [ 9 10 11 12]]
+print(np.delete(arr, 1, 1))
+# [[ 1  3  4]
+#  [ 5  7  8]
+#  [ 9 11 12]]
+
+
+# k) np.insert()
+a = np.array([[1, 1], [2, 2], [3, 3]])
+print(a)
+# [[1 1]
+#  [2 2]
+#  [3 3]]
+print(np.insert(a, 1, 5, axis=1))
+# [[1 5 1]
+#  [2 5 2]
+#  [3 5 3]]
+
+# l) np.append()
+print(np.append([[1, 2, 3], [4, 5, 6]], [[7, 8, 9]], axis=0))
+# [[1 2 3]
+#  [4 5 6]
+#  [7 8 9]]
+
+# m) np.reshape()
+a = np.arange(6).reshape((3, 2))
+print(a)
+# [[0 1]
+#  [2 3]
+#  [4 5]]
+
+# TODO: Need to read masked array
+
+###################################################
+###################################################
+# Array vs list
+##################################################
+##################################################
+
+# 1) addition
+list_a = [1, 2, 3]
+list_a = list_a + [1]
+print(list_a)
+# [1, 2, 3, 1]
+
+np_array_a = [1, 2, 3]
+np_array_a = np_array_a + np.array([1])
+print(np_array_a)
+# [2 3 4]
+
+np_array_a = [1, 2, 3]
+np_array_a = np_array_a + np.array([1, 2, 3])
+print(np_array_a)
+# [2 4 6]
+
+
+###################################################
+###################################################
+# Broadcasting
+##################################################
+##################################################
+
+# It is used when two numpy arrays do not have the same dimensions
+
+# eg:
+#   [ 1 2 3 ]  + [[1 2 3]
+#                 [4 5 6]]
+
+# this is achieved using broadcasting
+# it converts the first numpy array into ->
+# [[1 2 3]
+#  [1 2 3]]
+# Now it becomes
+# [[1 2 3]     +    [[1 2 3]
+#  [1 2 3]]          [4 5 6]]
+
+
+# [ 1 2 ] will be converted to [[1 1 1]
+#                               [2 2 2]]
+
+# Rules for Broadcasting
+# 1) The arrays have the same shape
+# 2)The arrays have the same number of dimensions, and the length of each dimension is either common or 1
+# 3) The array having fewer dimensions can have their shapes altered with a dimension 1, to satisfy the second rule
+
+
+##################################################
+##################################################
+# Slicing
+##################################################
+##################################################
+
+matrix_A = np.array([[1, 2, 3], [4, 5, 6]])
+print(matrix_A)
+# [[1 2 3]
+#  [4 5 6]]
+
+##################################################
+# Basic Slicing
+##################################################
+
+print(matrix_A[:])
+# [[1 2 3]
+#  [4 5 6]]
+
+print(matrix_A[::])
+# [[1 2 3]
+#  [4 5 6]]
+
+print(matrix_A[0:2])  # printing rows
+# [[1 2 3]
+#  [4 5 6]]
+
+print(matrix_A[:, :])  # Traversing all rows and all columns
+# [[1 2 3]
+#  [4 5 6]]
+
+print(matrix_A[:1])
+# [[1 2 3]]
+
+print(matrix_A[:, 1:])  # Column slicing
+# [[2 3]
+#  [5 6]]
+
+
+##################################################
+# Stepwise Slicing
+##################################################
+
+# Stepwise slicing is slicing nd arrays in such a fashion that the values are not consecutive
+# The steps can be positive or negative but not 0
+
+matrix_B = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13, 14, 15]])
+print(matrix_B)
+# [[ 1  2  3  4  5]
+#  [ 6  7  8  9 10]
+#  [11 12 13 14 15]]
+
+print(matrix_B[::2, ::])
+# [[ 1  2  3  4  5]
+#  [11 12 13 14 15]]
+
+print(matrix_B[::2, ::2])
+# [[ 1  3  5]
+#  [11 13 15]]
+
+print(matrix_B[::-2, ::2])
+# [[11 13 15]
+#  [ 1  3  5]]
+
+##################################################
+# Conditional Slicing
+##################################################
+
+print(matrix_B % 2 == 0)
+# [[False  True False  True False]
+#  [ True False  True False  True]
+#  [False  True False  True False]]
+
+print(matrix_B[matrix_B[:, :] % 2 == 0])
+# [ 2  4  6  8 10 12 14]
+# The length is not predefined so it returns a 1D array
+
+print(matrix_B[(matrix_B[:, :] % 2 == 0) & (matrix_B[:, :] % 3 == 0)])
+# [ 6 12]
+
+
+import numpy as np
+
+# Set the seed for reproducibility
+np.random.seed(365)
+
+# Number of rows
+rows = 500
+
+# Generate the columns
+col1 = np.random.normal(loc=3, scale=2, size=rows)
+col2 = np.random.exponential(scale=5, size=rows)
+col3 = np.random.logistic(loc=10, scale=4, size=rows)
+
+# Combine the columns to create the table
+table = np.column_stack((col1, col2, col3))
+
+# Calculate the max value
+max_value = np.max(table)
+print(max_value)
+
+##################################################
+##################################################
+# Import, load and save numpy data
+##################################################
+##################################################
+
+# np.loadtxt() -> loads text. It is faster
+# np.genfromtxt() -> generates new text. It is more flexible
+
+# np.genfromtxt() is more stable
+
+lending_co_data_numeric_1 = np.loadtxt("Lending-Company-Numeric-Data.csv", delimiter=',')
+print(lending_co_data_numeric_1)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+lending_co_data_numeric_2 = np.loadtxt("Lending-Company-Numeric-Data.csv", delimiter=',')
+print(lending_co_data_numeric_2)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+print(np.array_equal(lending_co_data_numeric_1, lending_co_data_numeric_2))
+# True
+
+# using loadtxt gives error because the dataset contains string and python accepts only string
+# thus we use genfromtext
+# another approach would be to convert dtype to string
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv", delimiter=';')
+print(lending_co_data_numeric_NAN)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [   nan    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv",
+                                            delimiter=';',
+                                            skip_header=2)
+print(lending_co_data_numeric_NAN)
+# [[ 1000.    40.   365.  2160.  3280. 15340.]
+#  [ 2000.    40.   365.  3041.  4241. 15321.]
+#  [ 2000.    50.   365.  3470.  4820. 13720.]
+#  ...
+#  [   nan    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv",
+                                            delimiter=';',
+                                            skip_footer=2)
+print(lending_co_data_numeric_NAN)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  3401.    nan 16600.]
+#  [ 2000.    40.   365.    nan  5440. 16600.]
+#  [   nan    40.   365.  4201.  5001. 16600.]]
+
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv",
+                                            delimiter=';',
+                                            usecols=(0, 1, 5))
+print(lending_co_data_numeric_NAN)
+# [[ 2000.    40. 13621.]
+#  [ 2000.    40. 15041.]
+#  [ 1000.    40. 15340.]
+#  ...
+#  [   nan    40. 16600.]
+#  [ 1000.    40. 15600.]
+#  [ 2000.    40. 16600.]]
+
+
+# Splitting clolumns into three arrays
+(lending_co_data_numeric_NAN_1,
+ lending_co_data_numeric_NAN_2,
+ lending_co_data_numeric_NAN_3) = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv",
+                                                delimiter=';',
+                                                usecols=(0, 1, 5), unpack=True)
+print(lending_co_data_numeric_NAN_1)
+print(lending_co_data_numeric_NAN_2)
+print(lending_co_data_numeric_NAN_3)
+# [2000. 2000. 1000. ...   nan 1000. 2000.]
+# [40. 40. 40. ... 40. 40. 40.]
+# [13621. 15041. 15340. ... 16600. 15600. 16600.]
+
+lending_co_lt = np.genfromtxt("lending-co-LT.csv", delimiter=",")
+print(lending_co_lt)
+# [[      nan       nan       nan ...       nan       nan       nan]
+#  [1.000e+00       nan       nan ...       nan       nan 1.660e+04]
+#  [2.000e+00       nan       nan ...       nan       nan 1.660e+04]
+#  ...
+#  [1.041e+03       nan       nan ...       nan       nan 1.660e+04]
+#  [1.042e+03       nan       nan ...       nan       nan 1.560e+04]
+#  [1.043e+03       nan       nan ...       nan       nan 1.660e+04]]
+
+
+# All nans get converted to -1
+lending_co_lt = np.genfromtxt("lending-co-LT.csv", delimiter=",", dtype=np.int32)
+print(lending_co_lt)
+# [[   -1    -1    -1 ...    -1    -1    -1]
+#  [    1    -1    -1 ...    -1    -1 16600]
+#  [    2    -1    -1 ...    -1    -1 16600]
+#  ...
+#  [ 1041    -1    -1 ...    -1    -1 16600]
+#  [ 1042    -1    -1 ...    -1    -1 15600]
+#  [ 1043    -1    -1 ...    -1    -1 16600]]
+
+lending_co_lt = np.genfromtxt("lending-co-LT.csv", delimiter=',', dtype=(np.int32, str, str, str, str, str, np.float32),
+                              encoding='utf-8')
+print(lending_co_lt)
+# [(  -1, '', '', '', '', '',    -1) (   1, '', '', '', '', '', 16600)
+#  (   2, '', '', '', '', '', 16600) ... (1041, '', '', '', '', '', 16600)
+#  (1042, '', '', '', '', '', 15600) (1043, '', '', '', '', '', 16600)]
+
+
+# Saving np into files
+
+lending_co = np.genfromtxt("lending-co-LT.csv",
+                           delimiter=',',
+                           dtype=str)
+np.save("Lending-Company-Saving", lending_co)
+
+##################################################
+##################################################
+# Statistical numpy data
+##################################################
+##################################################
+
+# 1) calculating mean
+matrix_A = np.array([[1, 0, 0, 3, 1], [3, 6, 6, 2, 9, ], [4, 5, 3, 8, 0]])
+print(matrix_A)
+# [[1 0 0 3 1]
+#  [3 6 6 2 9]
+#  [4 5 3 8 0]]
+print(np.mean(matrix_A))
+# 3.4
+print(np.mean(matrix_A[0]))
+# 1.0
+print(np.mean(matrix_A[:, 0]))
+# 2.6666666666666665
+print(np.mean(matrix_A, axis=0))
+# [2.66666667 3.66666667 3.         4.33333333 3.33333333]
+print(np.mean(matrix_A, axis=1))
+# [1.  5.2 4. ]
+
+# 2) calculating min and max, percentile, sort
+print(np.min(matrix_A))
+# 0
+print(np.amin(matrix_A))  # -> it specifically works with array
+# 0
+print(np.max(matrix_A))
+# 9
+print(np.amax(matrix_A))  # -> it specifically works with array
+# 9
+print(np.ptp(matrix_A))  # difference between maximum and minimum value in array
+# 9
+print(np.sort(matrix_A, axis=1))
+# [[0 0 1 1 3]
+#  [2 3 6 6 9]
+#  [0 3 4 5 8]]
+print(np.percentile(matrix_A, 70))
+# 4.799999999999999
+
+# 3) Average and Variance
+print(np.median(matrix_A, axis=None))
+# 3.0
+print(np.mean(matrix_A, axis=None))
+# 3.4
+# The difference between mean and average is that average is more versatile
+# It can calculate the weighs as well
+print(np.average(matrix_A))
+# 3.4
+print(np.var(matrix_A))
+# 7.84
+print(np.std(matrix_A))
+# 2.8
+print(np.cov(matrix_A))
+# [[ 1.5 -2.   2. ]
+#  [-2.   7.7 -7. ]
+#  [ 2.  -7.   8.5]]
+print(np.corrcoef(matrix_A))
+# [[ 1.         -0.58848989  0.56011203]
+#  [-0.58848989  1.         -0.8652532 ]
+#  [ 0.56011203 -0.8652532   1.        ]]
+
+# 4) Histograms
+matrix_A = np.array([[1, 0, 0, 3, 1], [3, 6, 6, 2, 9, ], [4, 5, 3, 8, 0]])
+print(matrix_A)
+# [[1 0 0 3 1]
+#  [3 6 6 2 9]
+#  [4 5 3 8 0]]
+print(np.sort(matrix_A, axis=None))
+# [0 0 0 1 1 2 3 3 3 4 5 6 6 8 9]
+
+print(np.histogram(matrix_A))
+# (array([3, 2, 1, 3, 1, 1, 2, 0, 1, 1], dtype=int64),
+# array([0. , 0.9, 1.8, 2.7, 3.6, 4.5, 5.4, 6.3, 7.2, 8.1, 9. ]))
+# first row is frequency with respect to each bin
+# Second row represents bin width
+
+print(np.histogram(matrix_A, bins=4))
+# (array([6, 4, 3, 2], dtype=int64),
+# array([0.  , 2.25, 4.5 , 6.75, 9.  ]))
+
+# histogramdd() will be used for tensors
+
+# 5) NAN Equivalents
+# matrix_A has no nan values but matrix_B has one nan value
+# matrix_A = np.array([[1, 0, 0, 3, 1], [3, 6, 6, 2, 9, ], [4, 5, 3, 8, 0]])
+matrix_B = np.array([[1, 0, 0, 3, 1], [3, 6, np.NaN, 2, 9, ], [4, 5, 3, 8, 0]])
+print(matrix_A)
+# [[1 0 0 3 1]
+#  [3 6 6 2 9]
+#  [4 5 3 8 0]]
+
+print(matrix_B)
+# [[ 1.  0.  0.  3.  1.]
+#  [ 3.  6. nan  2.  9.]
+#  [ 4.  5.  3.  8.  0.]]
+print(np.nanmean(matrix_A))
+# 3.4
+print(np.nanmean(matrix_B))
+# 3.2142857142857144
+print(np.mean(matrix_A))
+# 3.4
+print(np.mean(matrix_B))
+# nan
+
+##################################################
+##################################################
+# Data Manipulation And Preprocessing
+##################################################
+##################################################
+# 1) To check for missing data filling them
+
+# using np.loadtxt() points out all the missing values in the data
+lending_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")
+print(np.isnan(lending_co_data_numeric))
+# [[False False False False False False]
+#  [False False False False False False]
+#  [False False False False False False]
+#  ...
+#  [False False False False False False]
+#  [False False False False False False]
+#  [False False False False False False]]
+
+# False-> 0
+# True-> 1
+print(np.isnan(lending_co_data_numeric).sum())
+# 0
+# 0 => no true present => no missing values
+
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-company-Numeric-NAN.csv", delimiter=";")
+# loadtxt crashes so we use genfromtxt
+print(np.isnan(lending_co_data_numeric_NAN))
+# [[False False False False False False]
+#  [False False False False False False]
+#  [False False False False False False]
+#  ...
+#  [ True False False False False False]
+#  [False False False False False False]
+#  [False False False False False False]]
+print(np.isnan(lending_co_data_numeric_NAN).sum())
+# 260
+# 260 datapoints are missing
+
+
+# To solve that we fill missing values by a value greater than max value
+temporary_fill = np.nanmax(lending_co_data_numeric_NAN).round(2) + 1
+print(temporary_fill)
+# 64002.0
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv",
+                                            delimiter=";",
+                                            filling_values=temporary_fill)
+print(lending_co_data_numeric_NAN)
+# [[2.0000e+03 4.0000e+01 3.6500e+02 3.1210e+03 4.2410e+03 1.3621e+04]
+#  [2.0000e+03 4.0000e+01 3.6500e+02 3.0610e+03 4.1710e+03 1.5041e+04]
+#  [1.0000e+03 4.0000e+01 3.6500e+02 2.1600e+03 3.2800e+03 1.5340e+04]
+#  ...
+#  [6.4002e+04 4.0000e+01 3.6500e+02 4.2010e+03 5.0010e+03 1.6600e+04]
+#  [1.0000e+03 4.0000e+01 3.6500e+02 2.0800e+03 3.3200e+03 1.5600e+04]
+#  [2.0000e+03 4.0000e+01 3.6500e+02 4.6010e+03 4.6010e+03 1.6600e+04]]
+
+
+temporary_mean = np.nanmean(lending_co_data_numeric_NAN, axis=0).round(2)
+lending_co_data_numeric_NAN[:, 0] = np.where(lending_co_data_numeric_NAN[:, 0] == temporary_fill,
+                                             temporary_mean[0],
+                                             lending_co_data_numeric_NAN[:, 0])
+print(np.mean(lending_co_data_numeric_NAN[:, 0]).round(2))
+# 2315.87
+
+# 2) Reshapeing
+
+lending_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")
+print(lending_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+print(lending_co_data_numeric.shape)
+# (1043, 6)
+
+print(np.reshape(lending_co_data_numeric, (6, 1043)))
+# [[ 2000.    40.   365. ...   365.  1581.  3041.]
+#  [12277.  2000.    40. ...    50.   365.  5350.]
+#  [ 6850. 15150.  1000. ...  2000.    40.   365.]
+#  [ 3101.  4351. 16600. ... 16600.  2000.    40.]
+#  [  365.  3441.  4661. ...  8450. 22250.  2000.]
+#  [   40.   365.  3701. ...  4601.  4601. 16600.]]
+
+print(lending_co_data_numeric.transpose())
+# [[ 2000.  2000.  1000. ...  2000.  1000.  2000.]
+#  [   40.    40.    40. ...    40.    40.    40.]
+#  [  365.   365.   365. ...   365.   365.   365.]
+#  [ 3121.  3061.  2160. ...  4201.  2080.  4601.]
+#  [ 4241.  4171.  3280. ...  5001.  3320.  4601.]
+#  [13621. 15041. 15340. ... 16600. 15600. 16600.]]
+
+# 3) Deleting values
+print(np.delete(lending_co_data_numeric, 0).shape)
+# (6257,)
+print(np.delete(lending_co_data_numeric, 0, axis=0))
+# [[ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  [ 2000.    40.   365.  3041.  4241. 15321.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+print(np.delete(lending_co_data_numeric, (0, 2, 4), axis=0))
+# [[ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 2000.    40.   365.  3041.  4241. 15321.]
+#  [ 2000.    40.   365.  3201.  4141. 14141.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+print(np.delete(np.delete(lending_co_data_numeric, [0, 2, 4], axis=1), [0, 2, -1], axis=0))
+# [[   40.  3061. 15041.]
+#  [   40.  3041. 15321.]
+#  [   50.  3470. 13720.]
+#  ...
+#  [   40.  4240. 16600.]
+#  [   40.  4201. 16600.]
+#  [   40.  2080. 15600.]]
+
+# 4) Sorting data
+print(np.sort(lending_co_data_numeric))
+# [[   40.   365.  2000.  3121.  4241. 13621.]
+#  [   40.   365.  2000.  3061.  4171. 15041.]
+#  [   40.   365.  1000.  2160.  3280. 15340.]
+#  ...
+#  [   40.   365.  2000.  4201.  5001. 16600.]
+#  [   40.   365.  1000.  2080.  3320. 15600.]
+#  [   40.   365.  2000.  4601.  4601. 16600.]]
+
+print(np.sort(lending_co_data_numeric, axis=0))
+# [[ 1.0000e+03  3.5000e+01  3.6500e+02 -2.8700e+03 -2.8700e+03 -3.5000e+02]
+#  [ 1.0000e+03  3.5000e+01  3.6500e+02 -2.5500e+03 -2.1000e+03  1.5000e+02]
+#  [ 1.0000e+03  3.5000e+01  3.6500e+02 -2.4500e+03 -2.0000e+03  1.1000e+03]
+#  ...
+#  [ 9.0000e+03  1.2500e+02  3.6500e+02  1.6751e+04  1.8751e+04  5.4625e+04]
+#  [ 9.0000e+03  1.6500e+02  3.6500e+02  1.7650e+04  2.0001e+04  5.4625e+04]
+#  [ 9.0000e+03  1.6500e+02  3.6500e+02  1.9001e+04  2.2001e+04  6.4001e+04]]
+
+# It will suppress all scientific notations an will be continued
+# np.set_printoptions(suppress=True)
+print(np.sort(lending_co_data_numeric, axis=0))
+# [[ 1000.    35.   365. -2870. -2870.  -350.]
+#  [ 1000.    35.   365. -2550. -2100.   150.]
+#  [ 1000.    35.   365. -2450. -2000.  1100.]
+#  ...
+#  [ 9000.   125.   365. 16751. 18751. 54625.]
+#  [ 9000.   165.   365. 17650. 20001. 54625.]
+#  [ 9000.   165.   365. 19001. 22001. 64001.]]
+
+
+# 5) Shuffling data
+# We shuffle data to get an unbiased sample
+leading_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")[:8]
+print(leading_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  [ 2000.    40.   365.  3041.  4241. 15321.]
+#  [ 2000.    50.   365.  3470.  4820. 13720.]
+#  [ 2000.    40.   365.  3201.  4141. 14141.]
+#  [ 2000.    50.   365.  1851.  3251. 17701.]
+#  [ 2000.    40.   365.  3971.  4131. 15351.]]
+
+lending_co_data_numeric_shuffled = leading_co_data_numeric.copy()
+np.random.shuffle(lending_co_data_numeric_shuffled)
+print(lending_co_data_numeric_shuffled)
+# [[ 2000.    40.   365.  3041.  4241. 15321.]
+#  [ 2000.    40.   365.  3971.  4131. 15351.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  [ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 2000.    40.   365.  3201.  4141. 14141.]
+#  [ 2000.    50.   365.  3470.  4820. 13720.]
+#  [ 2000.    50.   365.  1851.  3251. 17701.]]
+
+# 6) Typcasting
+lending_co_data_numeric = lending_co_data_numeric.astype(dtype=str)
+print(lending_co_data_numeric)
+# [['2000.0' '40.0' '365.0' '3121.0' '4241.0' '13621.0']
+#  ['2000.0' '40.0' '365.0' '3061.0' '4171.0' '15041.0']
+#  ['1000.0' '40.0' '365.0' '2160.0' '3280.0' '15340.0']
+#  ...
+#  ['2000.0' '40.0' '365.0' '4201.0' '5001.0' '16600.0']
+#  ['1000.0' '40.0' '365.0' '2080.0' '3320.0' '15600.0']
+#  ['2000.0' '40.0' '365.0' '4601.0' '4601.0' '16600.0']]
+lending_co_data_numeric = lending_co_data_numeric.astype(dtype=np.float32)
+print(lending_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+# 7) Stripping
+lending_co_total_price = np.genfromtxt("Lending-Company-Total-Price.csv",
+                                       delimiter=',',
+                                       dtype=str,
+                                       skip_header=1,
+                                       usecols=[1, 2, 4])
+print(lending_co_total_price)
+# [['id_1' 'Product B' 'Location 2']
+#  ['id_2' 'Product B' 'Location 3']
+#  ['id_3' 'Product C' 'Location 5']
+#  ...
+#  ['id_413' 'Product B' 'Location 135']
+#  ['id_414' 'Product C' 'Location 200']
+#  ['id_415' 'Product A' 'Location 8']]
+
+# np.chararray() can be used to strip away character from the strings and leave behind
+# numbers in string
+print(np.chararray.strip(lending_co_total_price[:, 0], "id_"))
+# ['1' '2' '3' '4' '5' '6' '7' '8' '9' '10' '11' '12' '13' '14' '15' '16'
+#  '17' '18' '19' '20' '21' '22' '23' '24' '25' '26' '27' '28' '29' '30'
+#  '31' '32' '33' '34' '35' '36' '37' '38' '39' '40' '41' '42' '43' '44'
+#  '45' '46' '47' '48' '49' '50' '51' '52' '53' '54' '55' '56' '57' '58'
+#  '59' '60' '61' '62' '63' '64' '65' '66' '67' '68' '69' '70' '71' '72'
+#  '73' '74' '75' '76' '77' '78' '79' '80' '81' '82' '83' '84' '85' '86'
+#  '87' '88' '89' '90' '91' '92' '93' '94' '95' '96' '97' '98' '99' '100'
+#  '101' '102' '103' '104' '105' '106' '107' '108' '109' '110' '111' '112'
+#  '113' '114' '115' '116' '117' '118' '119' '120' '121' '122' '123' '124'
+#  '125' '126' '127' '128' '129' '130' '131' '132' '133' '134' '135' '136'
+#  '137' '138' '139' '140' '141' '142' '143' '144' '145' '146' '147' '148'
+#  '149' '150' '151' '152' '153' '154' '155' '156' '157' '158' '159' '160'
+#  '161' '162' '163' '164' '165' '166' '167' '168' '169' '170' '171' '172'
+#  '173' '174' '175' '176' '177' '178' '179' '180' '181' '182' '183' '184'
+#  '185' '186' '187' '188' '189' '190' '191' '192' '193' '194' '195' '196'
+#  '197' '198' '199' '200' '201' '202' '203' '204' '205' '206' '207' '208'
+#  '209' '210' '211' '212' '213' '214' '215' '216' '217' '218' '219' '220'
+#  '221' '222' '223' '224' '225' '226' '227' '228' '229' '230' '231' '232'
+#  '233' '234' '235' '236' '237' '238' '239' '240' '241' '242' '243' '244'
+#  '245' '246' '247' '248' '249' '250' '251' '252' '253' '254' '255' '256'
+#  '257' '258' '259' '260' '261' '262' '263' '264' '265' '266' '267' '268'
+#  '269' '270' '271' '272' '273' '274' '275' '276' '277' '278' '279' '280'
+#  '281' '282' '283' '284' '285' '286' '287' '288' '289' '290' '291' '292'
+#  '293' '294' '295' '296' '297' '298' '299' '300' '301' '302' '303' '304'
+#  '305' '306' '307' '308' '309' '310' '311' '312' '313' '314' '315' '316'
+#  '317' '318' '319' '320' '321' '322' '323' '324' '325' '326' '327' '328'
+#  '329' '330' '331' '332' '333' '334' '335' '336' '337' '338' '339' '340'
+#  '341' '342' '343' '344' '345' '346' '347' '348' '349' '350' '351' '352'
+#  '353' '354' '355' '356' '357' '358' '359' '360' '361' '362' '363' '364'
+#  '365' '366' '367' '368' '369' '370' '371' '372' '373' '374' '375' '376'
+#  '377' '378' '379' '380' '381' '382' '383' '384' '385' '386' '387' '388'
+#  '389' '390' '391' '392' '393' '394' '395' '396' '397' '398' '399' '400'
+#  '401' '402' '403' '404' '405' '406' '407' '408' '409' '410' '411' '412'
+#  '413' '414' '415']
+lending_co_total_price[:, 0] = np.chararray.strip(lending_co_total_price[:, 0], "id_")
+lending_co_total_price[:, 1] = np.chararray.strip(lending_co_total_price[:, 1], "Product ")
+lending_co_total_price[:, 2] = np.chararray.strip(lending_co_total_price[:, 2], "Location ")
+print(lending_co_total_price)
+# [['1' ' B' ' 2']
+#  ['2' ' B' ' 3']
+#  ['3' ' C' ' 5']
+#  ...
+#  ['413' ' B' ' 135']
+#  ['414' ' C' ' 200']
+#  ['415' ' A' ' 8']]
+
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "A", 1, lending_co_total_price[:, 1])
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "B", 2, lending_co_total_price[:, 1])
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "C", 3, lending_co_total_price[:, 1])
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "D", 4, lending_co_total_price[:, 1])
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "E", 5, lending_co_total_price[:, 1])
+lending_co_total_price[:, 1] = np.where(lending_co_total_price[:, 1] == "F", 6, lending_co_total_price[:, 1])
+print(lending_co_total_price)
+# [['1' '2' '2']
+#  ['2' '2' '3']
+#  ['3' '3' '5']
+#  ...
+#  ['413' '2' '135']
+#  ['414' '3' '200']
+#  ['415' '1' '8']]
+
+lending_co_total_price = lending_co_total_price.astype(dtype=np.int32)
+print(lending_co_total_price)
+# [[  1   2   2]
+#  [  2   2   3]
+#  [  3   3   5]
+#  ...
+#  [413   2 135]
+#  [414   3 200]
+#  [415   1   8]]
+
+# 8) Stacking
+lending_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")
+lending_co_data_numeric_NAN = np.genfromtxt("Lending-Company-Numeric-Data-NAN.csv", delimiter=";")
+print(lending_co_data_numeric.shape)
+# (1043, 6)
+print(lending_co_data_numeric_NAN.shape)
+# (1043, 6)
+print(lending_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+print(lending_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+print(np.vstack((lending_co_data_numeric, lending_co_data_numeric_NAN)).shape)
+# (2086, 6)
+print(np.hstack((lending_co_data_numeric, lending_co_data_numeric_NAN)).shape)
+# (1043, 12)
+print(np.dstack((lending_co_data_numeric, lending_co_data_numeric_NAN)).shape)
+# (1043, 6, 2)
+
+# 9) Concatenating
+lending_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")
+print(lending_co_data_numeric)
+# [[ 2000.    40.   365.  3121.  4241. 13621.]
+#  [ 2000.    40.   365.  3061.  4171. 15041.]
+#  [ 1000.    40.   365.  2160.  3280. 15340.]
+#  ...
+#  [ 2000.    40.   365.  4201.  5001. 16600.]
+#  [ 1000.    40.   365.  2080.  3320. 15600.]
+#  [ 2000.    40.   365.  4601.  4601. 16600.]]
+
+print(np.concatenate((lending_co_data_numeric[0, :], lending_co_data_numeric[1, :])))
+# [ 2000.    40.   365.  3121.  4241. 13621.  2000.    40.   365.  3061.   4171. 15041.]
+
+# 10) Unique
+lending_co_data_numeric = np.loadtxt("Lending-company-Numeric.csv", delimiter=",")
+print(lending_co_data_numeric)
+print(np.unique(lending_co_data_numeric))
+# [-2870. -2550. -2450. ... 52751. 54625. 64001.]
+print(np.unique(lending_co_data_numeric[:, 1], return_counts=True))
+# (array([ 35.,  40.,  50., 125., 165.]),
+# array([  4, 567, 451,  19,   2], dtype=int64))
+print(np.unique(lending_co_data_numeric[:, 1], return_counts=True, return_index=True))
+# (array([ 35.,  40.,  50., 125., 165.]),
+# array([327,   0,   4,  19,  27], dtype=int64),
+# array([  4, 567, 451,  19,   2], dtype=int64))
+
+D1 = np.genfromtxt("Data_preprocessing_Numpy.csv", delimiter=";")
+# nan_array = np.isnan(D1).sum()
+# print(nan_array)
+min_val = np.nanmin(D1)
+# Replace all nan values with the smallest number
+print(min_val)
+arr = D1.copy()
+arr = np.where(np.isnan(arr), min_val, arr)
+print(arr)
+print(np.mean(arr[:, 1]))
+
+##################################################
+##################################################
+# Data Analyist Work and Project
+##################################################
+##################################################
+
+##################################################
+# TASK: To create a credit risk model which estimates
+# the probability of default for
+# every personal account
+
+# Information porvided:
+# 1) What data is stored
+# 2) How to clean the data
+
+# Data
+# 1) A small part of the data is only provided
+# 2) the data is provided in dollars and needs to be converted to euroes
+# 3) Every categorical variable must be quantified
+# 4) Missing information suggests foul play
+# 5) data provided in "loan-data.csv"
+##################################################
+
+# This line supresses scientific notations
+np.set_printoptions(suppress=True, linewidth=100, precision=2)
+
+#########################
+# Importing data
+#########################
+
+raw_data_np = np.genfromtxt("loan-data.csv", delimiter=";", skip_header=1, autostrip=True)
+# The file has nan values so we use genfromtxt
+# the first line is headers so we skip it
+# to prevent unnecessary white spaces we use autostrip
+print(raw_data_np)
+# [[48010226.           nan    35000.   ...         nan         nan     9452.96]
+#  [57693261.           nan    30000.   ...         nan         nan     4679.7 ]
+#  [59432726.           nan    15000.   ...         nan         nan     1969.83]
+#  ...
+#  [50415990.           nan    10000.   ...         nan         nan     2185.64]
+#  [46154151.           nan         nan ...         nan         nan     3199.4 ]
+#  [66055249.           nan    10000.   ...         nan         nan      301.9 ]]
+
+print(np.isnan(raw_data_np).sum())
+# 88005
+# there are 88005 missing values
+
+temporary_fill = np.nanmax(raw_data_np) + 1
+# This will fill the values with the maximum value+1 of the dataset
+# temporary_fill just now has only the value
+
+temporary_mean = np.nanmean(raw_data_np, axis=0)
+# This will store mean for all the columns
+
+print(temporary_mean)
+# [54015809.19         nan    15273.46         nan    15311.04         nan       16.62      440.92
+#          nan         nan         nan         nan         nan     3143.85]
+# The places where only text is stored cotains nan as average and is also the reason for the warning
+# thus we must split the data data into two table containing numeric data and the other containing string data
+
+temporary_stats = np.array([np.nanmin(raw_data_np, axis=0),
+                            temporary_mean,
+                            np.nanmax(raw_data_np, axis=0)])
+print(temporary_stats)
+# [[  373332.           nan     1000.           nan     1000.           nan        6.         31.42
+#           nan         nan         nan         nan         nan        0.  ]
+#  [54015809.19         nan    15273.46         nan    15311.04         nan       16.62      440.92
+#           nan         nan         nan         nan         nan     3143.85]
+#  [68616519.           nan    35000.           nan    35000.           nan       28.99     1372.97
+
+
+#########################
+# Splitting the data
+#########################
+# argwhere will check for the condition value !=0
+# ture => 1
+# false => 0
+columns_string = np.argwhere(np.isnan(temporary_mean)).squeeze()
+print(columns_string)
+# [ 1  3  5  8  9 10 11 12]
+columns_numeric = np.argwhere(np.isnan(temporary_mean) == False).squeeze()
+print(columns_numeric)
+# [ 0  2  4  6  7 13]
+
+
+loan_data_strings = np.genfromtxt("loan-data.csv",
+                                  delimiter=";",
+                                  skip_header=1,
+                                  autostrip=True,
+                                  usecols=columns_string,
+                                  dtype=str)
+
+loan_data_numeric = np.genfromtxt("loan-data.csv",
+                                  delimiter=";",
+                                  skip_header=1,
+                                  autostrip=True,
+                                  usecols=columns_numeric,
+                                  filling_values=temporary_fill)
+print(loan_data_numeric)
+# [[48010226.      35000.      35000.         13.33     1184.86     9452.96]
+#  [57693261.      30000.      30000.   68616520.        938.57     4679.7 ]
+#  [59432726.      15000.      15000.   68616520.        494.86     1969.83]
+#  ...
+#  [50415990.      10000.      10000.   68616520.   68616520.       2185.64]
+#  [46154151.   68616520.      10000.         16.55      354.3      3199.4 ]
+#  [66055249.      10000.      10000.   68616520.        309.97      301.9 ]]
+print(loan_data_strings)
+# [['May-15' 'Current' '36 months' ... 'Verified'
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=48010226' 'CA']
+#  ['' 'Current' '36 months' ... 'Source Verified'
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=57693261' 'NY']
+#  ['Sep-15' 'Current' '36 months' ... 'Verified'
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=59432726' 'PA']
+#  ...
+#  ['Jun-15' 'Current' '36 months' ... 'Source Verified'
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=50415990' 'CA']
+#  ['Apr-15' 'Current' '36 months' ... 'Source Verified'
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=46154151' 'OH']
+#  ['Dec-15' 'Current' '36 months' ... ''
+#   'https://www.lendingclub.com/browse/loanDetail.action?loan_id=66055249' 'IL']]
+
+################
+# Naming the columns
+################
+header_full = np.genfromtxt("loan-data.csv",
+                            delimiter=";",
+                            autostrip=True,
+                            skip_footer=raw_data_np.shape[0],
+                            dtype=str)
+print(header_full)
+# ['id' 'issue_d' 'loan_amnt' 'loan_status' 'funded_amnt' 'term' 'int_rate' 'installment' 'grade'
+#  'sub_grade' 'verification_status' 'url' 'addr_state' 'total_pymnt']
+
+header_strings, header_numeric = header_full[columns_string], header_full[columns_numeric]
+print(header_numeric)
+# ['id' 'loan_amnt' 'funded_amnt' 'int_rate' 'installment' 'total_pymnt']
+print(header_strings)
+# ['issue_d' 'loan_status' 'term' 'grade' 'sub_grade' 'verification_status' 'url' 'addr_state']
+
+# Checkpoint
+
+# def checkpoint(file_name, checkpoint_header, checkpoint_data):
+#     np.savez(file_name, header = checkpoint_header, data = checkpoint_data)
+#     checkpoint_variable = np.load(file_name+".npz")
+#     return(checkpoint_variable)
+
+################
+# Manipulating String Columns
+################
+
+# 1) Date string
+print(np.unique(loan_data_strings[:, 0]))
+# ['' 'Apr-15' 'Aug-15' 'Dec-15' 'Feb-15' 'Jan-15' 'Jul-15' 'Jun-15' 'Mar-15' 'May-15' 'Nov-15'
+#  'Oct-15' 'Sep-15']
+loan_data_strings[:, 0] = np.chararray.strip(loan_data_strings[:, 0], "-15")
+print(np.unique(loan_data_strings[:, 0]))
+# ['' 'Apr' 'Aug' 'Dec' 'Feb' 'Jan' 'Jul' 'Jun' 'Mar' 'May' 'Nov' 'Oct' 'Sep']
+months = np.array(['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+for i in range(13):
+    loan_data_strings[:, 0] = np.where(loan_data_strings[:, 0] == months[i],
+                                       i,
+                                       loan_data_strings[:, 0])
+print(np.unique(loan_data_strings[:, 0]))
+
+# 2) Loan Status
+print(np.unique(loan_data_strings[:, 1]))
+# ['' 'Charged Off' 'Current' 'Default' 'Fully Paid' 'In Grace Period' 'Issued' 'Late (16-30 days)'
+#  'Late (31-120 days)']
+
+# We split data into good or bad
+# 1 for good and 0 for bad
+
+status_bad = np.array(["", "Charged Off", "Default", "Late(31-120 days)"])
+loan_data_strings[:, 1] = np.where(np.isin(loan_data_strings[:, 1], status_bad), 0, 1)
+print(loan_data_strings[:, 1])
+# ['1' '1' '1' ... '1' '1' '1']
+
+# 3) Term
+print(np.unique(loan_data_strings[:, 2]))
+# ['' '36 months' '60 months']
+loan_data_strings[:, 2] = np.chararray.strip(loan_data_strings[:, 2], "months")
+# removing "months" from the data
+print(loan_data_strings[:, 2])
+# ['36 ' '36 ' '36 ' ... '36 ' '36 ' '36 ']
+
+header_strings[2] = "term_months"
+# renaming header to represent months is used
+loan_data_strings[:, 2] = np.where(loan_data_strings[:, 2] == "",
+                                   "60",
+                                   loan_data_strings[:, 2])
+print(loan_data_strings[:, 2])
+
+# 4) Grade and Sub-grade
+
+print(np.unique(loan_data_strings[:, 3]))
+# ['' 'A' 'B' 'C' 'D' 'E' 'F' 'G']
+print(np.unique(loan_data_strings[:, 4]))
+# ['' 'A1' 'A2' 'A3' 'A4' 'A5' 'B1' 'B2' 'B3' 'B4' 'B5' 'C1' 'C2' 'C3' 'C4' 'C5' 'D1' 'D2' 'D3' 'D4'
+#  'D5' 'E1' 'E2' 'E3' 'E4' 'E5' 'F1' 'F2' 'F3' 'F4' 'F5' 'G1' 'G2' 'G3' 'G4' 'G5']
+
+# filling subgrade using grade
+for i in np.unique(loan_data_strings[:, 3])[1:]:
+    loan_data_strings[:, 4] = np.where((loan_data_strings[:, 4] == "") & (loan_data_strings[:, 3] == i),
+                                       i + '5',
+                                       loan_data_strings[:, 4])
+print(np.unique(loan_data_strings[:, 4], return_counts=True))
+# (array(['', 'A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5', 'C1', 'C2', 'C3', 'C4',
+#        'C5', 'D1', 'D2', 'D3', 'D4', 'D5', 'E1', 'E2', 'E3', 'E4', 'E5', 'F1', 'F2', 'F3', 'F4',
+#        'F5', 'G1', 'G2', 'G3', 'G4', 'G5'], dtype='<U69'), array([  9, 285, 278, 239, 323, 592, 509, 517, 530, 553, 633, 629, 567, 586, 564, 577, 391, 267,
+#        250, 255, 288, 235, 162, 171, 139, 160,  94,  52,  34,  43,  24,  19,  10,   3,   7,   5],
+#       dtype=int64))
+
+# we still have 9 missing values and we can assign then even lower values
+np.unique(loan_data_strings[:, 4], return_counts=True)
+loan_data_strings[:, 4] = np.where(loan_data_strings[:, 4] == "",
+                                   "H1",
+                                   loan_data_strings[:, 4])
+print(np.unique(loan_data_strings[:, 4]))
+# ['A1' 'A2' 'A3' 'A4' 'A5' 'B1' 'B2' 'B3' 'B4' 'B5' 'C1' 'C2' 'C3' 'C4' 'C5' 'D1' 'D2' 'D3' 'D4'
+#  'D5' 'E1' 'E2' 'E3' 'E4' 'E5' 'F1' 'F2' 'F3' 'F4' 'F5' 'G1' 'G2' 'G3' 'G4' 'G5' 'H1']
+
+# Now we dont have any missing values so we can get rid of grades columns
+
+loan_data_strings = np.delete(loan_data_strings, 3, axis=1)
+print(loan_data_strings[:, 3])
+# ['C3' 'A5' 'B5' ... 'A5' 'D2' 'A4']
+
+# now we will convert the sub-grades to numbers
+keys = list(np.unique(loan_data_strings[:, 3]))
+values = list(range(1, np.unique(loan_data_strings[:, 3]).shape[0] + 1))
+dict_sub_grade = dict(zip(keys, values))
+
+for i in np.unique(loan_data_strings[:, 3]):
+    loan_data_strings[:, 3] = np.where(loan_data_strings[:, 3] == i,
+                                       dict_sub_grade[i],
+                                       loan_data_strings[:, 3])
+
+# 5) Verification Status
+print(np.unique(loan_data_strings[:, 4]))
+# ['' 'Not Verified' 'Source Verified' 'Verified']
+# We convert bad options to 0 and good options to 1
+
+loan_data_strings[:, 4] = np.where((loan_data_strings[:, 4] == "") | (loan_data_strings[:, 4] == "Not Verified"), 0, 1)
+print(np.unique(loan_data_strings[:, 4]))
+# ['0' '1']
+
+# 6) URL
+loan_data_strings[:, 5] = np.chararray.strip(loan_data_strings[:, 5],
+                                             'https://www.lendingclub.com/browse/loanDetail.action?loan_id=')
+print(loan_data_strings[:, 5])
+loan_data_strings = np.delete(loan_data_strings, 5, axis=1)
+header_strings = np.delete(header_strings, 5)
+print(loan_data_strings[:, 5])
+# URL has been removed
+# because ulr no is equal to id
+print(loan_data_numeric[:, 0])
+
+# 7) State Address
+header_strings[5] = "state_address"
+print(np.unique(loan_data_strings[:, 5], return_counts=True))
+# (array(['', 'AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IL', 'IN',
+#        'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH',
+#        'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA',
+#        'VT', 'WA', 'WI', 'WV', 'WY'], dtype='<U69'), array([ 500,   26,  119,   74,  220, 1336,  201,  143,   27,   27,  690,  321,   44,  389,  152,
+#          84,   84,  116,  210,  222,   10,  267,  156,  160,   61,   28,  261,   16,   25,   58,
+#         341,   57,  130,  777,  312,   83,  108,  320,   40,  107,   24,  143,  758,   74,  242,
+#          17,  216,  148,   49,   27], dtype=int64))
+states_names, states_count = np.unique(loan_data_strings[:, 5], return_counts=True)
+states_count_sorted = np.argsort(-states_count)
+print(states_names[states_count_sorted], states_count[states_count_sorted])
+# ['CA' 'NY' 'TX' 'FL' '' 'IL' 'NJ' 'GA' 'PA' 'OH' 'MI' 'NC' 'VA' 'MD' 'AZ' 'WA' 'MA' 'CO' 'MO' 'MN'
+#  'IN' 'WI' 'CT' 'TN' 'NV' 'AL' 'LA' 'OR' 'SC' 'KY' 'KS' 'OK' 'UT' 'AR' 'MS' 'NH' 'NM' 'WV' 'HI'
+#  'RI' 'MT' 'DE' 'DC' 'WY' 'AK' 'NE' 'SD' 'VT' 'ND' 'ME']
+#  [1336  777  758  690  500  389  341  321  320  312  267  261  242  222  220  216  210  201  160
+#   156  152  148  143  143  130  119  116  108  107   84   84   83   74   74   61   58   57   49
+#    44   40   28   27   27   27   26   25   24   17   16   10]
+
+loan_data_strings[:, 5] = np.where(loan_data_strings[:, 5] == "",
+                                   0,
+                                   loan_data_strings[:, 5])
+states_west = np.array(['WA', 'OR', 'CA', 'NV', 'ID', 'MT', 'WY', 'UT', 'CO', 'AZ', 'NM', 'HI', 'AK'])
+states_south = np.array(
+    ['TX', 'OK', 'AR', 'LA', 'MS', 'AL', 'TN', 'KY', 'FL', 'GA', 'SC', 'NC', 'VA', 'WV', 'MD', 'DE', 'DC'])
+states_midwest = np.array(['ND', 'SD', 'NE', 'KS', 'MN', 'IA', 'MO', 'WI', 'IL', 'IN', 'MI', 'OH'])
+states_east = np.array(['PA', 'NY', 'NJ', 'CT', 'MA', 'VT', 'NH', 'ME', 'RI'])
+
+loan_data_strings[:, 5] = np.where(np.isin(loan_data_strings[:, 5], states_west), 1, loan_data_strings[:, 5])
+loan_data_strings[:, 5] = np.where(np.isin(loan_data_strings[:, 5], states_south), 2, loan_data_strings[:, 5])
+loan_data_strings[:, 5] = np.where(np.isin(loan_data_strings[:, 5], states_midwest), 3, loan_data_strings[:, 5])
+loan_data_strings[:, 5] = np.where(np.isin(loan_data_strings[:, 5], states_east), 4, loan_data_strings[:, 5])
+loan_data_strings = loan_data_strings.astype(np.int32)
+
+# checkpoint_strings = checkpoint("Checkpoint-Strings", header_strings, loan_data_strings)
+
+################
+# Manipulating Numeric Columns
+################
+
+print(temporary_fill)
+# 68616520.0
+print(np.isin(loan_data_numeric[:, 0], temporary_fill))
+# [False False False ... False False False]
+print(np.isin(loan_data_numeric[:, 0], temporary_fill).sum())
+# 0
+# 0=> no missing values
+
+print(temporary_stats[:, columns_numeric])
+# [[  373332.       1000.       1000.          6.         31.42        0.  ]
+#  [54015809.19    15273.46    15311.04       16.62      440.92     3143.85]
+#  [68616519.      35000.      35000.         28.99     1372.97    41913.62]]
+
+# 1) Funded Amount
+print(loan_data_numeric[:, 2])
+
+loan_data_numeric[:, 2] = np.where(loan_data_numeric[:, 2] == temporary_fill,
+                                   temporary_stats[0, columns_numeric[2]],
+                                   loan_data_numeric[:, 2])
+# [35000. 30000. 15000. ... 10000. 10000. 10000.]
+print(temporary_stats[0, columns_numeric[3]])
+# 6.0
+
+# 2) loan amount, interest rate, total payment, installment
+for i in [1, 3, 4, 5]:
+    loan_data_numeric[:, i] = np.where(loan_data_numeric[:, i] == temporary_fill,
+                                       temporary_stats[2, columns_numeric[i]],
+                                       loan_data_numeric[:, i])
+print(loan_data_numeric)
+# [[48010226.      35000.      35000.         13.33     1184.86     9452.96]
+#  [57693261.      30000.      30000.         28.99      938.57     4679.7 ]
+#  [59432726.      15000.      15000.         28.99      494.86     1969.83]
+#  ...
+#  [50415990.      10000.      10000.         28.99     1372.97     2185.64]
+#  [46154151.      35000.      10000.         16.55      354.3      3199.4 ]
+#  [66055249.      10000.      10000.         28.99      309.97      301.9 ]]
+
+################
+# Currency Change
+################
+EUR_USD = np.genfromtxt("EUR-USD.csv", delimiter=",", autostrip=True, skip_header=1, usecols=3)
+print(EUR_USD)
+# [1.13 1.12 1.08 1.11 1.1  1.12 1.09 1.13 1.13 1.1  1.06 1.09]
+
+exchange_rate = loan_data_strings[:, 0]
+for i in range(1, 13):
+    exchange_rate = np.where(exchange_rate == i,
+                             EUR_USD[i - 1],
+                             exchange_rate)
+exchange_rate = np.where(exchange_rate == 0,
+                         np.mean(EUR_USD),
+                         exchange_rate)
+
+print(exchange_rate)
+# [1.1  1.11 1.13 ... 1.12 1.11 1.09]
+print(loan_data_numeric.shape)
+# (10000, 6)
+print(exchange_rate.shape)
+# (10000,)
+
+exchange_rate = np.reshape(exchange_rate, (10000, 1))
+loan_data_numeric = np.hstack((loan_data_numeric, exchange_rate))
+header_numeric = np.concatenate((header_numeric, np.array(['exchange_rate'])))
+print(header_numeric)
+# ['id' 'loan_amnt' 'funded_amnt' 'int_rate' 'installment' 'total_pymnt' 'exchange_rate']
+
+################
+# USD to EUR
+################
+
+columns_dollar = np.array([1, 2, 4, 5])
+print(loan_data_numeric[:, 6])
+for i in columns_dollar:
+    loan_data_numeric = np.hstack(
+        (loan_data_numeric, np.reshape(loan_data_numeric[:, i] / loan_data_numeric[:, 6], (10000, 1))))
+print(loan_data_numeric)
+# [[48010226.      35000.      35000.   ...    31933.3      1081.04     8624.69]
+#  [57693261.      30000.      30000.   ...    27132.46      848.86     4232.39]
+#  [59432726.      15000.      15000.   ...    13326.3       439.64     1750.04]
+#  ...
+#  [50415990.      10000.      10000.   ...     8910.3      1223.36     1947.47]
+#  [46154151.      35000.      10000.   ...     8997.4       318.78     2878.63]
+#  [66055249.      10000.      10000.   ...     9145.8       283.49      276.11]]
+print(loan_data_numeric.shape)
+# (10000, 11)
+header_additional = np.array([column_name + "_EUR" for column_name in header_numeric[columns_dollar]])
+header_numeric = np.concatenate((header_numeric, header_additional))
+header_numeric[columns_dollar] = np.array([column_name + "_USD" for column_name in header_numeric[columns_dollar]])
+print(header_numeric)
+columns_index_order = [0, 1, 7, 2, 8, 3, 4, 9, 5, 10, 6]
+header_numeric = header_numeric[columns_index_order]
+print(loan_data_numeric)
+# ['id' 'loan_amnt_USD' 'funded_amnt_USD' 'int_rate' 'installment_USD' 'total_pymnt_USD'
+#  'exchange_rate' 'loan_amnt_EUR' 'funded_amnt_EUR' 'installment_EUR' 'total_pymnt_EUR']
+loan_data_numeric = loan_data_numeric[:, columns_index_order]
+header_numeric = header_numeric[columns_index_order]
+loan_data_numeric = loan_data_numeric[:, columns_index_order]
+loan_data_numeric[:, 3] = loan_data_numeric[:, 3]/100
+print(loan_data_numeric[:, 3])
+
+
