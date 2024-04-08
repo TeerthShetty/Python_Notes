@@ -12,7 +12,7 @@ This file contains the basic implementation of the K-Means Clustering and is tes
 I have taken reference from various youtube videos and various textbooks.
 I have tried to include the inner working each of the  line and why was it included in comments.
 
-# K Nearest Neighbor Clustering
-This file contains the basic implementation of the K-Means Clustering and is tested on python 3.9.2
+# K Nearest Neighbor
+This file contains the basic implementation of the K Nearest Neighbour and is tested on python 3.9.2
 I have taken reference from various youtube videos and various textbooks.
 I have tried to include the inner working each of the  line and why was it included in comments.
