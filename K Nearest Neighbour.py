@@ -1,6 +1,6 @@
 #################################################################################
-THIS IS JUST A BASIC IMPLLEMENTATION
-IF THERE ARE ANY CORRECTIONS PLEASE LET ME KNOW
+# THIS IS JUST A BASIC IMPLLEMENTATION
+# IF THERE ARE ANY CORRECTIONS PLEASE LET ME KNOW
 #################################################################################
 
 # KNN to predict weather a person has diabetes or not
