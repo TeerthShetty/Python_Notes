@@ -1,13 +1,13 @@
 #################################################################################
-THEORY IS EXPLAINED FIRST THEN THE CODE IS GIVEN BELOW
-THIS IS JUST A BASIC IMPLLEMENTATION
-IF THERE ARE ANY CORRECTIONS PLEASE LET ME KNOW
+# THEORY IS EXPLAINED FIRST THEN THE CODE IS GIVEN BELOW
+#THIS IS JUST A BASIC IMPLLEMENTATION
+# IF THERE ARE ANY CORRECTIONS PLEASE LET ME KNOW
 #################################################################################
 
 
 ################################################
 ################################################
-THEORY
+# THEORY
 ################################################
 ################################################
 
@@ -101,7 +101,7 @@ THEORY
 
 ################################################
 ################################################
-CODE
+# CODE
 ################################################
 ################################################
 
