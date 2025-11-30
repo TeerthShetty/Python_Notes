@@ -1,0 +1,182 @@
+# Link from where I learnt: https://www.youtube.com/watch?v=w8yWXqWQYmU&t=12s
+# Link for the dataset: https://www.kaggle.com/code/wwsalmon/simple-mnist-nn-from-scratch-numpy-no-tf-keras
+#############################################################
+#############################################################
+# Problem Statement
+#############################################################
+#############################################################
+
+# To make a NN using basic math and numpy to detect handwritten numbers
+
+# We are using Fully Connected Neural Network not a Convoluted Neural Network
+#############################################################
+# FULLY CONNECTED NEURAL NETWORK
+#############################################################
+
+# Structure : Each neuron in one layer is connected to every neuron in the next layer.
+# Data Handling: Treats input as a flat vector, losing spatial or sequential structure
+# Use case: Best for tabular data, classification task or as the final layers in CNNs
+# Simpl to make
+# Effective for small datasets or non-spatial data
+# If number of parameters are high then it faces overfitting
+# Does not work well with high dimensional inputs
+
+
+
+
+
+
+
+#############################################################
+#############################################################
+# The Math
+#############################################################
+#############################################################
+
+
+# 28 x 28 pixels training data which is 784 pixels
+# Each pixel is a value between 0 and 255(both inclusive) (2^8 = 265 = 255 - 0 + 1)
+# 255 -> White
+# 0   -> Black
+
+# Each row will have 784 columns long because each of them is going to correspond to one pixel in that image
+# 784 = 28 x 28; -> Entering the data as a single row instead of a 2d array
+# Eg
+# [[p00, p01, p02, p03........p27],
+#  [p28, p29, p30,................]];
+# Converted to
+# [p00, p01, p02, p03, .............];
+# This compression is done because the NN only accept 1D Array
+
+
+
+
+
+#############################################################
+#############################################################
+# The Structure
+#############################################################
+#############################################################
+
+
+# 784 (input) → 10 (hidden) → 10 (output)
+
+
+
+# X = data.T
+
+# Image data : [p00, p01, p02..........] this will be transposed
+
+# This will be a 2 layered Neural Network
+# The First layer (Zeroth Layer) has 784 nodes -> Input layer (not counted as a layer though
+# Second layer (Frist Layer) will have 10 nodes -> First Hidden Layer
+# The Third layer (Second Layer) will have 10 nodes -> Output Layer
+
+# Forward Propagation: Inputting the value
+# A0 = X (784 x m), There is no calculations that happen here
+# First layer is the unactivated first layer
+# Z[1] = W[1]A[0] + b[1] -> Linear combination (dot product is used
+# Z[1] = Raw output of the neuron
+# W[1] = Weight for matrix level 1
+# b[1] = bias vector for layer 1
+# A[0] = input to the layer
+
+# An Activation function is need because the output needs to be non linear
+# Without the Activation function it will just be a rally fancy linear regression
+
+# A[1] = ReLU(Z[1])
+# This bend the straight line into a curve
+# Then in layer 2 the bend increases
+# This helps make a better fitting curve
+
+# ReLU or the Softmax function will convert the output layer value into probability values thus they lie between 0 and 1
+
+# So now we need good weights and biases, for this we will be using back propagation
+# dz[2] = A[2] - Y
+# dW[2] = (1/m).dZ[2].A[1]
+# db[2] = (1/m).{sigma}(dZ[2]
+# dZ[1] = W[2][T].dZ[2].g'(Z[2])
+# dW[1] = (1/m).dZ[1].X[T]
+# db[2] = (1/m).{sigma}(dZ[1])
+
+# W[1] = W[1] - {alpha}.dW[1]
+# b[1] = b[1] - {alpha}.db[1]
+# W[2] = W[2] - {alpha}.dW[2]
+# b[2] = W[2] - {alpha}.dW[2]
+
+#{alpha} is the learning rate
+
+
+# Layer 1 (Input Layer)
+# Input : 784 x m
+# output: 10 x m
+# So each of the 10 neurons in the hidden layer must receive 784 inputs.
+
+# Why is W1 shaped (10, 784)?
+
+# You have 10 neurons in hidden layer 1
+# Each neuron needs 784 weights (one per input pixel)
+# W1 looks like this
+
+# Neuron 1:  [w1, w2, w3, w4........w784]
+# Neuron 2:  [w1, w2, w3, w4........w784]
+# Neuron 3:  [w1, w2, w3, w4........w784]
+# Neuron 4:  [w1, w2, w3, w4........w784]
+# Neuron 5:  [w1, w2, w3, w4........w784]
+# Neuron 6:  [w1, w2, w3, w4........w784]
+# Neuron 7:  [w1, w2, w3, w4........w784]
+# Neuron 8:  [w1, w2, w3, w4........w784]
+# Neuron 9:  [w1, w2, w3, w4........w784]
+# Neuron 10: [w1, w2, w3, w4........w784]
+
+# W1 = (number of neurons in layer 1) × (number of inputs)
+# W1 = 10 × 784
+
+
+# Why is b1 shaped (10, 1)?
+
+# Bias is one number per neuron.
+# You have 10 neurons → you need 10 biases.
+
+# | Parameter | Shape     | Meaning                                            |
+# | --------- | --------- | -------------------------------------------------- |
+# | **W1**    | (10, 784) | Weights from 784 inputs → 10 hidden neurons        |
+# | **b1**    | (10, 1)   | Bias for each of the 10 hidden neurons             |
+# | **W2**    | (10, 10)  | Weights from 10 hidden neurons → 10 output neurons |
+# | **b2**    | (10, 1)   | Bias for each of the 10 output neurons             |
+
+#############################################################
+#############################################################
+# The Code
+#############################################################
+#############################################################
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
+data = pd.read_csv('train.csv')
+print(data.head(5))
+
+data = np.array(data)
+m,n = data.shape # Dimension of the data
+np.random.shuffle(data)
+
+data_dev = data[0:1000].T # developer data set
+Y_dev = data_dev[0]
+X_dev = data_dev[1:n]
+
+data_train = data[1000:m].T # Training dataset
+Y_train = data_dev[0]
+X_train = data_dev[1:n]
+
+print(X_train[:, 0].shape)
+
+
+def init_params():
+    W1 = np.random.rand(10, 784)
+    b1 = np.random.rand(10, 1)
+    W2 = np.random.rand(10, 10)
+    b2 = np.random.rand(10, 1)
+    return W1, b1, W2, b2
