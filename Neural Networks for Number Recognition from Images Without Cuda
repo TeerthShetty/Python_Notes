@@ -331,7 +331,7 @@ def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     # Gradient of loss w.r.t Z2 when using softmax + cross entropy loss
     # A2 : predicted probabilities (10, m)
     # one_hot_Y : true labels in one-hot form (10, m)
-    dZ2 = A2 - one_hot(Y)
+    dZ2 = A2 - one_hot_Y
 
     # dW2 = (1/m) * dZ2 · A1ᵀ
     # Gradient of loss w.r.t W2
@@ -344,7 +344,7 @@ def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     # Gradient of loss w.r.t b2
     # Summed over all samples
     # Ideally should keep dimensions: axis=1, keepdims=True
-    db2 = 1 / m * np.sum(dZ2)
+    db2 = (1/m) * np.sum(dZ2, axis=1, keepdims=True)
 
     # dZ1 = W2ᵀ · dZ2 ⊙ ReLU'(Z1)
     # Backpropagate error to hidden layer
@@ -363,7 +363,7 @@ def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     # db1 = (1/m) * sum(dZ1)
     # Gradient of loss w.r.t b1
     # Ideally should be: np.sum(dZ1, axis=1, keepdims=True)
-    db1 = 1 / m * np.sum(dZ1)
+    db1 = (1/m) * np.sum(dZ1, axis=1, keepdims=True)
 
     # Return all gradients
     return dW1, db1, dW2, db2
