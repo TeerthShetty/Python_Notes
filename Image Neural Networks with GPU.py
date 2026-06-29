@@ -1,4 +1,4 @@
-# My system
+# My system details
 # Torch: 2.11.0+cu128
 # CUDA: 12.8
 # CUDA Available: True
