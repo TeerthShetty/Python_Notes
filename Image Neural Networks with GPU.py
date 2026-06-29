@@ -4,7 +4,7 @@
 # CUDA Available: True
 # GPU Count: 1
 # GPU: NVIDIA GeForce RTX 3050 6GB Laptop GPU
-
+# Time reduced from 1 min to 7 sec
 
 
 # Link from where I learnt: https://www.youtube.com/watch?v=w8yWXqWQYmU&t=12s
