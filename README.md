@@ -1,5 +1,6 @@
 # Python_Notes
 - I have personally typed these notes for reference and understanding. They are based on my understanding and reference from various courses and articles.
+- I personally like to use older version of python because of library support.
 - I prefer to use older versions of Python because they have better support for various libraries like Tensorflow, Transformers etc.
 - You are free to use these notes. I myself use them for my reference. 
 - Please feel free to let me know if any updates are required.
